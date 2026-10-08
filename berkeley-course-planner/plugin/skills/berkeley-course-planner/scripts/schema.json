@@ -1,0 +1,152 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Berkeley course planner plan.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["run", "requirements", "sections", "excluded"],
+  "properties": {
+    "run": { "$ref": "#/$defs/run" },
+    "requirements": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/requirement" }
+    },
+    "sections": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["breadth", "major", "personal", "decal"],
+      "properties": {
+        "breadth": { "$ref": "#/$defs/rows" },
+        "major": { "$ref": "#/$defs/rows" },
+        "personal": { "$ref": "#/$defs/rows" },
+        "decal": { "$ref": "#/$defs/rows" }
+      }
+    },
+    "excluded": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/excluded_course" }
+    }
+  },
+  "$defs": {
+    "nonempty_string": { "type": "string", "minLength": 1 },
+    "url": { "type": "string", "pattern": "^https?://\\S+$" },
+    "rows": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/row" }
+    },
+    "run": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "date",
+        "semester",
+        "major",
+        "college",
+        "unit_target",
+        "unit_default_applied",
+        "catalog_years",
+        "delivery"
+      ],
+      "properties": {
+        "date": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+        "semester": { "$ref": "#/$defs/nonempty_string" },
+        "major": { "$ref": "#/$defs/nonempty_string" },
+        "college": { "$ref": "#/$defs/nonempty_string" },
+        "unit_target": { "type": "number", "minimum": 0 },
+        "unit_default_applied": { "type": "boolean" },
+        "catalog_years": {
+          "type": "object",
+          "additionalProperties": { "$ref": "#/$defs/nonempty_string" }
+        },
+        "delivery": { "enum": ["folder", "download"] }
+      }
+    },
+    "requirement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["group", "requirement", "status", "satisfied_by", "source_url"],
+      "properties": {
+        "group": { "enum": ["campus", "college", "major"] },
+        "requirement": { "$ref": "#/$defs/nonempty_string" },
+        "status": { "enum": ["Done", "Remaining", "Chosen option"] },
+        "satisfied_by": { "type": "string" },
+        "source_url": { "$ref": "#/$defs/url" }
+      }
+    },
+    "excluded_course": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["course_number", "slot", "reason"],
+      "properties": {
+        "course_number": { "$ref": "#/$defs/nonempty_string" },
+        "slot": { "$ref": "#/$defs/nonempty_string" },
+        "reason": { "$ref": "#/$defs/nonempty_string" }
+      }
+    },
+    "row": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "slot",
+        "course_number",
+        "course_url",
+        "title",
+        "units",
+        "instructor",
+        "lecture_time",
+        "label",
+        "review_score",
+        "reviews_kept",
+        "reviews_this_course",
+        "rmp_url",
+        "review_notes",
+        "reddit_urls",
+        "grading",
+        "a_range_pct",
+        "grade_scope",
+        "berkeleytime_url",
+        "also_satisfies",
+        "flags"
+      ],
+      "properties": {
+        "slot": { "$ref": "#/$defs/nonempty_string" },
+        "course_number": { "$ref": "#/$defs/nonempty_string" },
+        "course_url": { "$ref": "#/$defs/url" },
+        "title": { "$ref": "#/$defs/nonempty_string" },
+        "units": { "type": "number", "minimum": 0 },
+        "instructor": { "$ref": "#/$defs/nonempty_string" },
+        "lecture_time": { "type": "string" },
+        "label": {
+          "enum": [
+            "Recommended (reviews)",
+            "Below bar (reviews)",
+            "Recommended (grades)",
+            "Below bar (grades)",
+            "No data",
+            "Interest match"
+          ]
+        },
+        "review_score": { "type": ["number", "null"], "minimum": 0, "maximum": 5 },
+        "reviews_kept": { "type": "integer", "minimum": 0 },
+        "reviews_this_course": { "type": "integer", "minimum": 0 },
+        "rmp_url": { "type": ["string", "null"], "pattern": "^https?://\\S+$" },
+        "review_notes": { "type": "string", "maxLength": 500 },
+        "reddit_urls": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/url" }
+        },
+        "grading": { "enum": ["Generous", "Strict", "P/NP", "No data"] },
+        "a_range_pct": { "type": ["number", "null"], "minimum": 0, "maximum": 100 },
+        "grade_scope": { "type": "string" },
+        "berkeleytime_url": { "type": ["string", "null"], "pattern": "^https?://\\S+$" },
+        "also_satisfies": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/nonempty_string" }
+        },
+        "flags": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    }
+  }
+}
